@@ -9,7 +9,7 @@ class Message(models.Model):
         'Chat', 
         on_delete=models.CASCADE, 
         related_name='messages')
-    sender = models.ForeignKey('Customer', on_delete=models.CASCADE)
+    sender = models.ForeignKey('Customer', null=True, on_delete=models.SET_NULL)
 
 
 class Chat(models.Model):
@@ -24,9 +24,15 @@ class Customer(models.Model):
         related_name='customer_profile')
     contacts = models.ManyToManyField(to='self')
 
+    def __str__(self):
+        return self.user.username
+
 
 class AdminUser(models.Model):
     user = models.OneToOneField(
         User, 
         on_delete=models.CASCADE, 
         related_name='admin_profile')
+
+    def __str__(self):
+        return self.user.username
