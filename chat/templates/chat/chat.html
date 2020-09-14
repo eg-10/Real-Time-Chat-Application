@@ -1,4 +1,62 @@
 {% extends 'base.html' %}
 {% block content %}
-<h2>Chat between</h2>
+<p>Hey, {{ user.username }}</p>
+<p>
+    Participants: 
+    <ol>
+        {% for p in object.participants.all  %}
+            <li>{{ p }}</li>
+        {% endfor %}
+    </ol>
+</p>
+<textarea id="chat-log" cols="100" rows="20">
+{% for m in object.messages.all %}{{ m }}
+{% endfor %}
+</textarea><br>
+<input id="chat-message-input" type="text" size="100"><br>
+<input id="chat-message-submit" type="button" value="Send">
+{{ object.id|json_script:"chat-id" }}
+{{ user.username|json_script:"username" }}
+{% endblock %}
+{% block custom_js %}
+<script>
+    const chatId = JSON.parse(document.getElementById('chat-id').textContent);
+    const user = JSON.parse(document.getElementById('username').textContent);
+    document.querySelector('#chat-log').scrollTop = document.querySelector('#chat-log').scrollHeight;
+
+    const chatSocket = new WebSocket(
+        'ws://'
+        + window.location.host
+        + '/ws/chat/'
+        + chatId
+        + '/'
+    );
+
+    chatSocket.onmessage = function (e) {
+        const data = JSON.parse(e.data);
+        document.querySelector('#chat-log').value += (data.sender + ':' + data.message + '\n');
+        document.querySelector('#chat-log').scrollTop = document.querySelector('#chat-log').scrollHeight;
+    };
+
+    chatSocket.onclose = function (e) {
+        console.error('Chat socket closed unexpectedly');
+    };
+
+    document.querySelector('#chat-message-input').focus();
+    document.querySelector('#chat-message-input').onkeyup = function (e) {
+        if (e.keyCode === 13) {  // enter, return
+            document.querySelector('#chat-message-submit').click();
+        }
+    };
+
+    document.querySelector('#chat-message-submit').onclick = function (e) {
+        const messageInputDom = document.querySelector('#chat-message-input');
+        const message = messageInputDom.value;
+        chatSocket.send(JSON.stringify({
+            'message': message,
+            'sender' : user
+        }));
+        messageInputDom.value = '';
+    };
+</script>
 {% endblock %}

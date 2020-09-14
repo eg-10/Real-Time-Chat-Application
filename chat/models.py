@@ -11,10 +11,16 @@ class Message(models.Model):
         related_name='messages')
     sender = models.ForeignKey('Customer', null=True, on_delete=models.SET_NULL)
 
+    def __str__(self):
+        return str(self.sender) + ':' + str(self.text_content)
+
 
 class Chat(models.Model):
     last_active = models.DateTimeField(auto_now=True)
-    participants = models.ManyToManyField('Customer')
+    participants = models.ManyToManyField('Customer', related_name='chats')
+
+    def __str__(self):
+        return str([str(p) for p in self.participants.all()])
 
 
 class Customer(models.Model):
