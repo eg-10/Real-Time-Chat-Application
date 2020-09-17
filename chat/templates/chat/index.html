@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
-<h2>Welcome</h2>
+<h2>Welcome, {{user.username}}</h2>
+<a href="{% url 'add-contacts' pk=user.customer_profile.id %}"><h3>Add contacts</h3></a>
 {% for c in user.customer_profile.chats.all %}
 <a href="{% url 'chat-view' pk=c.id %}">{{ c }}</a><br>
 {% endfor %}
