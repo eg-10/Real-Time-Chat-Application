@@ -1,13 +1,45 @@
 from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+
+from knox.models import AuthToken
 
 from chat.api.serializers import (
     CustomerSerializer, 
     ChatSerializer,
     ChatListSerializer,
-    MessageSerializer)
+    MessageSerializer,
+    UserSerializer,
+    LoginSerializer,
+    RegisterSerializer)
 from chat.models import Customer, Chat, Message
+
+
+class RegisterAPIView(generics.GenericAPIView):
+    serializer_class = RegisterSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        return Response({
+            "user": UserSerializer(user, context=self.get_serializer_context()).data,
+            "token": AuthToken.objects.create(user)[1]
+        })
+
+
+class LoginAPIView(generics.GenericAPIView):
+    serializer_class = LoginSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data
+        return Response({
+            "user": UserSerializer(user, context=self.get_serializer_context()).data,
+            "token": AuthToken.objects.create(user)[1]
+        })
 
 
 class ContactsListView(generics.ListAPIView):
@@ -36,26 +68,3 @@ class ChatDetailView(generics.RetrieveAPIView):
     def get_queryset(self):
         return self.request.user.customer_profile.chats.all()
 
-
-# class ChatSendMessageAPIView(APIView):
-#     serializer_class = ChatSerializer
-#     permission_classes = [IsAuthenticated,]
-
-#     def post(self, request, pk):
-#         chat = Chat.objects.get(pk=pk)
-#         message = request.kwargs.get("content", None)
-#         sender = request.user.customer_profile
-#         if message:
-#             message = Message.objects.create(
-#                 text_content=message, 
-#                 chat=chat, 
-#                 sender=sender)
-        
-
-#         answer.voters.add(user)
-#         answer.save()
-
-#         serializer_context = {"request":request}
-#         serializer = self.serializer_class(answer, context=serializer_context)
-
-#         return Response(serializer.data, status=status.HTTP_200_OK)
