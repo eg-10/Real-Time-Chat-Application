@@ -1,36 +1,56 @@
 import React, { Component } from 'react';
+import { connect } from "react-redux";
+import * as actions from "../store/actions/auth";
 import { Link } from 'react-router-dom';
 
 export class Signup extends Component {
 
-    render() {
-      return (
-        <div className="App">
-            <div class="main order-md-2">
-					<div class="start">
-						<div class="container">
-							<div class="col-md-12">
-								<div class="content">
+	authenticate = e => {
+		e.preventDefault();
+		this.props.signup(
+			e.target.username.value, 
+			e.target.email.value,
+			e.target.first_name.value,
+			e.target.last_name.value,
+			e.target.password.value
+		);
+		console.log(e.target.username.value,"treid")
+	};
+
+	render() {
+		return (
+			<div className="App">
+				<div className="main order-md-2">
+					<div className="start">
+						<div className="container">
+							<div className="col-md-12">
+								<div className="content">
 									<h1>Create Account</h1>
-									
-									<p>use your email for registration:</p>
-									<form class="signup">
-										<div class="form-parent">
-											<div class="form-group">
-												<input type="text" id="inputName" class="form-control" placeholder="Username" required></input>
-												<button class="btn icon"><i class="material-icons">person_outline</i></button>
+									<form className="signup" method="POST" onSubmit={this.authenticate}>
+										<div className="form-parent">
+											<div className="form-group">
+												<input name="username" type="text" id="inputUsername" className="form-control" placeholder="Username" required></input>
+												<button className="btn icon"><i className="material-icons">person_outline</i></button>
 											</div>
-											<div class="form-group">
-												<input type="email" id="inputEmail" class="form-control" placeholder="Email Address" required></input>
-												<button class="btn icon"><i class="material-icons">mail_outline</i></button>
+											<div className="form-group">
+												<input name="email" type="email" id="inputEmail" className="form-control" placeholder="Email Address" required></input>
+												<button className="btn icon"><i className="material-icons">mail_outline</i></button>
 											</div>
 										</div>
-										<div class="form-group">
-											<input type="password" id="inputPassword" class="form-control" placeholder="Password" required></input>
-											<button class="btn icon"><i class="material-icons">lock_outline</i></button>
+										<div className="form-parent">
+											<div className="form-group">
+												<input name="first_name" type="text" id="inputFirstName" className="form-control" placeholder="First Name" required></input>
+											</div>
+											<div className="form-group">
+												<input name="last_name" type="text" id="inputLastName" className="form-control" placeholder="Last Name" required></input>
+											</div>
 										</div>
-										<button type="submit" class="btn button" ><Link to="/">Sign Up</Link></button>
-										<div class="callout">
+										<div className="form-group">
+											<input name="password" type="password" id="inputPassword" className="form-control" placeholder="Password" required></input>
+											<button className="btn icon"><i className="material-icons">lock_outline</i></button>
+										</div>
+										<button type="submit" className="btn button" >Sign Up</button>
+										<div className="callout">
 											<span>Already a member? <a href="sign-in.html">Sign In</a></span>
 										</div>
 									</form>
@@ -39,7 +59,19 @@ export class Signup extends Component {
 						</div>
 					</div>
 				</div>
-        </div>
-      );
-    }
-  }
+			</div>
+		);
+	}
+}
+
+const mapDispatchToProps = dispatch => {
+	return {
+		signup: (username, email, first_name, last_name, password) =>
+			dispatch(actions.authSignup(username, password, email, first_name, last_name))
+	};
+};
+
+export default connect(
+	null,
+	mapDispatchToProps
+)(Signup);

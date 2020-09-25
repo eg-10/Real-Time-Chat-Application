@@ -16,7 +16,7 @@ class IndexView(LoginRequiredMixin, TemplateView):
 class CustomerSignUpView(FormView):
     form_class = CustomerCreationForm
     template_name = 'registration/customer-signup.html'
-    success_url = '/'
+    success_url = reverse_lazy('login')
 
     def form_valid(self, form):
         form.save()
