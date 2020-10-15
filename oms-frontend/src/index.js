@@ -2,23 +2,25 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { createStore, compose, applyMiddleware, combineReducers } from "redux";
 import thunk from "redux-thunk";
+import { Provider } from 'react-redux';
 
-import authReducer from "./store/reducers/auth";
-
-import './index.css';
-import App from './App';
 import 'font-awesome/css/font-awesome.css';
 import 'bootstrap-social/bootstrap-social.css';
-import * as serviceWorker from './serviceWorker';
 import './dist/css/lib/bootstrap.min.css';
 import './dist/css/swipe.min.css';
-import { Provider } from 'react-redux';
+
+import authReducer from "./store/reducers/auth";
+import chatReducer from "./store/reducers/chat";
+import './index.css';
+import App from './App';
+import * as serviceWorker from './serviceWorker';
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 function configureStore() {
 	const rootReducer = combineReducers({
-		auth: authReducer
+		auth: authReducer,
+		chat: chatReducer
 	});
 
 	const store = createStore(

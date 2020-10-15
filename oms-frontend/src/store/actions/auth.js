@@ -1,6 +1,7 @@
 import axios from "axios";
 import * as actionTypes from "./actionTypes";
 import { HOST_URL } from "../../settings";
+import * as chatActions from "./chat"
 
 export const authStart = () => {
 	return {
@@ -30,6 +31,25 @@ export const logout = () => {
 	return {
 		type: actionTypes.AUTH_LOGOUT
 	};
+}
+
+export const authLogout = (token) => {
+	return dispatch => {
+		token = 'Token '+token;
+		axios
+			.post(`${HOST_URL}/api/auth/logout/`, {}, {
+				headers: {
+					Authorization: token
+				}
+			})
+			.then(response => {
+				console.log("Logged Out Successfully");
+				dispatch(logout());
+			})
+			.catch(err => {
+				console.log("Log Out Errors");
+			});
+	};
 };
 
 export const checkAuthTimeout = expirationTime => {
@@ -48,17 +68,22 @@ export const authLogin = (username, password) => {
 				username: username,
 				password: password
 			})
-			.then(res => {
-				const token = res.data.token;
+			.then(response => {
+				console.log(response.data);
+				const token = response.data.token;
 				const expirationDate = new Date(new Date().getTime() + 3600 * 1000);
 				localStorage.setItem("token", token);
 				localStorage.setItem("username", username);
 				localStorage.setItem("expirationDate", expirationDate);
 				dispatch(authSuccess(username, token));
+				dispatch(chatActions.chatInit(
+					response.data.user.customer_profile.chats,
+					response.data.user.customer_profile.contacts
+				));
 				dispatch(checkAuthTimeout(3600));
 			})
 			.catch(err => {
-				dispatch(authFail(err));
+				dispatch(authFail("Invalid Credentials"));
 			});
 	};
 };
@@ -74,8 +99,9 @@ export const authSignup = (username, password, email, first_name, last_name) => 
 				first_name: first_name,
 				last_name: last_name
 			})
-			.then(res => {
-				const token = res.data.token;
+			.then(response => {
+				console.log(response.data);
+				const token = response.data.token;
 				const expirationDate = new Date(new Date().getTime() + 3600 * 1000);
 				localStorage.setItem("token", token);
 				localStorage.setItem("username", username);

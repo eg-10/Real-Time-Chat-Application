@@ -1,39 +1,42 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { connect } from "react-redux";
 
 import './App.css';
 import { BrowserRouter as Router, Route, Link, Switch } from 'react-router-dom';
-import Signup from './component/SignupComponent';
-import Signin from './component/SigninComponent';
-import { Home } from './component/HomeComponent';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-import { Header } from './component/HeaderComponent';
+import Signup from './components/SignupComponent';
+import Signin from './components/SigninComponent';
+import Header from './components/HeaderComponent';
+import ChatWindow from './components/ChatLayout';
+import { render } from 'react-dom';
+import Logout from './components/Logout';
 
-function App() {
+class App extends Component {
 
-
-	return (
-		<Router>
-			<div className="App">
-
-				< Header />
-				
-			</div>
-			<Switch>
-				<Route exact path='/' component={Home}></Route>
-				<Route exact path='/signup' component={Signup}></Route>
-				<Route exact path='/signin' component={Signin}></Route>
-			</Switch>
-		</Router>
-
-	);
+	render(){
+		return (
+			<Router>
+				<div className="App">
+					< Header />
+				</div>
+				<Switch>
+					<Route exact path='/signup' component={Signup}></Route>
+					<Route exact path='/login' component={Signin}></Route>
+					<Route exact path='/logout' component={Logout}></Route>
+					<Route path='/' component={ChatWindow}></Route>
+					
+				</Switch>
+			</Router>
+	
+		);
+	}
 
 }
 
 const mapStateToProps = state => {
 	return {
-		authenticated: state.auth.token
+		isAuthenticated: state.auth.token !== null,
 	};
 };
 

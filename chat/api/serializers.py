@@ -1,20 +1,9 @@
 from django.contrib.auth import authenticate
+from django.db.models import fields
 
 from rest_framework import serializers
 
 from chat.models import Customer, User, Chat, Message
-
-
-# class ContactListingField(serializers.RelatedField):
-#     def to_representation(self, value):
-#         duration = time.strftime('%M:%S', time.gmtime(value.duration))
-#         return 'Track %d: %s (%s)' % (value.order, value.name, duration)
-
-class UserSerializer(serializers.ModelSerializer):
-    
-    class Meta:
-        model = User
-        fields = ["username", "first_name", "last_name", "email"]
 
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -46,19 +35,18 @@ class LoginSerializer(serializers.Serializer):
         raise serializers.ValidationError("Incorrect Credentials")
 
 
-class CustomerSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
+class UserBasicSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["username", "first_name", "last_name", "email"]
+
+
+class CustomerBasicSerializer(serializers.ModelSerializer):
+    user = UserBasicSerializer()
 
     class Meta:
         model = Customer
         fields = ['user']
-
-
-class ChatListSerializer(serializers.ModelSerializer):
-   
-    class Meta:
-        model = Chat
-        fields = '__all__'
 
 
 class MessageSerializer(serializers.ModelSerializer):
@@ -70,9 +58,37 @@ class MessageSerializer(serializers.ModelSerializer):
 
 class ChatSerializer(serializers.ModelSerializer):
     messages = MessageSerializer(many=True)
-    participants = CustomerSerializer(many=True)
+    participants = CustomerBasicSerializer(many=True)
 
     class Meta:
         model = Chat
         fields = '__all__'
 
+
+class CustomerDetailSerializer(serializers.ModelSerializer):
+    contacts = CustomerBasicSerializer(many=True)
+    chats = ChatSerializer(many=True)
+
+    class Meta:
+        model = Customer
+        fields=["contacts", "chats"]
+
+
+class UserDetailSerializer(serializers.ModelSerializer):
+    customer_profile = CustomerDetailSerializer()
+
+    class Meta:
+        model = User
+        fields = ["username", "first_name", "last_name", "email", "customer_profile"]
+
+
+# class ChatListSerializer(serializers.ModelSerializer):
+   
+#     class Meta:
+#         model = Chat
+#         fields = '__all__'
+
+# class ContactListingField(serializers.RelatedField):
+#     def to_representation(self, value):
+#         duration = time.strftime('%M:%S', time.gmtime(value.duration))
+#         return 'Track %d: %s (%s)' % (value.order, value.name, duration)
