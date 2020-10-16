@@ -3,7 +3,7 @@ import '../css/swipe.min.css';
 import { connect } from "react-redux";
 
 import {Navigation} from './Navigation';
-import {Main } from './Main';
+import ChatWindow from './ChatWindow';
 import { Sidebar } from './Sidebar';
 import { Redirect } from 'react-router-dom';
 
@@ -12,10 +12,10 @@ class ChatLayout extends Component{
         return(
             this.props.isAuthenticated ? 
             <div>
-                <div className="layout">
-					<Navigation/>
-					<Sidebar/>
-					<Main/>
+                <div className="layout" id="chat-layout">
+					<Navigation />
+					<Sidebar />
+					<ChatWindow />
                 </div>   
             </div>
             : <Redirect to="/login" />

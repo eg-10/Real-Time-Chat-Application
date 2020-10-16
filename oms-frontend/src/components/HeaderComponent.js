@@ -26,23 +26,27 @@ class Header extends Component {
 				<Navbar dark expand="md">
 					<div className="container">
 						<NavbarToggler onClick={this.toggleNav} />
-						<Link to="/"><NavbarBrand className="mr-md-auto" href="#"><img src='chatlogo.png' height="30" width="41" alt='OMS' />	Real Time Chat App</NavbarBrand></Link>
+						<Link to="/">
+							<NavbarBrand className="mr-md-auto" href="#">
+								<img src='chatlogo.png' height="30" width="41" alt='OMS' /> Real Time Chat App
+							</NavbarBrand>
+						</Link>
 						<Collapse isOpen={this.state.isNavOpen} navbar>
 							{this.props.isAuthenticated ?
-							<Nav navbar className="ml-auto" >
-								<NavItem>
-									<NavLink className="nav-link" to='/logout'><span className="fa fa-sign-out fa-lg"></span> Logout</NavLink>
-								</NavItem>
-							</Nav>
-							: 
-							<Nav navbar className="ml-auto" >
-								<NavItem>
-									<NavLink className="nav-link" to='/login'><span className="fa fa-sign-in fa-lg"></span> Login</NavLink>
-								</NavItem>
-								<NavItem>
-									<NavLink className="nav-link" to='/signup'><span className="fa fa-user-circle fa-lg"></span> Sign Up</NavLink>
-								</NavItem>
-							</Nav>
+								<Nav navbar className="ml-auto" >
+									<NavItem>
+										<NavLink className="nav-link" to='/logout'><span className="fa fa-sign-out fa-lg"></span> Logout</NavLink>
+									</NavItem>
+								</Nav>
+								:
+								<Nav navbar className="ml-auto" >
+									<NavItem>
+										<NavLink className="nav-link" to='/login'><span className="fa fa-sign-in fa-lg"></span> Login</NavLink>
+									</NavItem>
+									<NavItem>
+										<NavLink className="nav-link" to='/signup'><span className="fa fa-user-circle fa-lg"></span> Sign Up</NavLink>
+									</NavItem>
+								</Nav>
 							}
 						</Collapse>
 					</div>

@@ -50,7 +50,8 @@ class CustomerBasicSerializer(serializers.ModelSerializer):
 
 
 class MessageSerializer(serializers.ModelSerializer):
-    
+    sender = CustomerBasicSerializer()
+
     class Meta:
         model = Message
         fields = '__all__'

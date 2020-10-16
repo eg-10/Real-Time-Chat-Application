@@ -1,11 +1,23 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import '../css/swipe.min.css';
 
-export default class ChatItem extends Component {
+import * as actions from '../store/actions/chat'
+
+class ChatItem extends Component {
     render() {
         return (
 
-            <a href="#list-chat" className="filterDiscussions all unread single active" id="list-chat-list" data-toggle="list" role="tab">
+            <a
+                onClick={() => {
+                    console.log("chat clicked!");
+                    this.props.setCurrentChat(this.props.chat);
+                }}
+                href="#chat-layout"
+                className={
+                    this.props.active ? "filterDiscussions all unread single active" : "filterDiscussions all unread single"
+                } 
+                role="tab">
                 <img className="avatar-md" src={require("../img/avatars/avatar-female-1.jpg")} data-toggle="tooltip" data-placement="top" title="Janette" alt="avatar" />
                 {/* <div className="status">
                     <i className="material-icons online">fiber_manual_record</i>
@@ -23,3 +35,15 @@ export default class ChatItem extends Component {
         );
     }
 }
+
+const mapDispatchToProps = dispatch => {
+	return {
+		setCurrentChat: (chat) =>
+			dispatch(actions.chatSelected(chat))
+	};
+};
+
+export default connect(
+	null,
+	mapDispatchToProps
+)(ChatItem);
