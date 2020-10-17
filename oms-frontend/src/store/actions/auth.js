@@ -76,7 +76,7 @@ export const authLogin = (username, password) => {
 				localStorage.setItem("username", username);
 				localStorage.setItem("expirationDate", expirationDate);
 				dispatch(authSuccess(username, token));
-				dispatch(chatActions.chatInit(
+				dispatch(chatActions.chatsConnectAndInit(
 					response.data.user.customer_profile.chats,
 					response.data.user.customer_profile.contacts
 				));
@@ -107,6 +107,10 @@ export const authSignup = (username, password, email, first_name, last_name) => 
 				localStorage.setItem("username", username);
 				localStorage.setItem("expirationDate", expirationDate);
 				dispatch(authSuccess(username, token));
+				dispatch(chatActions.chatInit(
+					response.data.user.customer_profile.chats,
+					response.data.user.customer_profile.contacts
+				));
 				dispatch(checkAuthTimeout(3600));
 			})
 			.catch(err => {

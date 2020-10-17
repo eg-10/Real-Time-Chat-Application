@@ -31,7 +31,7 @@ function configureStore() {
 	return store;
 }
 
-const store = configureStore();
+export const store = configureStore();
 
 
 ReactDOM.render(

@@ -14,7 +14,7 @@ export default class Message extends Component {
                     <div className="text-group">
                         <div className={this.props.me ? "text me" : "text"}>
                             {!(this.props.me) ?
-                                <h5 className="text-dark text-primary">{this.props.sender}</h5>
+                                <p className="text-dark text-primary font-weight-bold">{this.props.sender}</p>
                                 : null
                             }
                             <p className={this.props.me ? "" : "text-dark"}>{this.props.message}</p>

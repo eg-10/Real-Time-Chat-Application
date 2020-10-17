@@ -23,12 +23,29 @@ const chatSelected = (state, action) => {
     });
 };
 
+const chatMessageRecieve = (state, action) => {
+    console.log("Recieved message",action.message);
+    let updated_chats = [...state.chats];
+    let updated_current_chat = state.current_chat ? {...state.current_chat} : null;
+    let chat_index = updated_chats.findIndex(chat => chat.id == action.message.chat);
+    updated_chats[chat_index].messages.push(action.message);
+    // if (updated_current_chat && updated_current_chat.id == action.message.chat) {
+    //     updated_current_chat.messages.push(action.message);
+    // }
+    return updateObject(state, {
+        chats: updated_chats,
+        current_chat: updated_current_chat
+    });
+};
+
 const reducer = (state = initialState, action) => {
     switch (action.type) {
         case actionTypes.CHAT_INIT:
             return chatInit(state, action);
         case actionTypes.CHAT_SELECTED:
             return chatSelected(state, action);
+        case actionTypes.CHAT_RECIEVE_MESSAGE:
+            return chatMessageRecieve(state, action);
         default:
             return state;
     }

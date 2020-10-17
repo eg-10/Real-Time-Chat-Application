@@ -2,9 +2,41 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import '../css/swipe.min.css';
 
+import * as actions from '../store/actions/chat' 
 import Message from './Message';
 
 class ChatWindow extends Component {
+
+	
+	constructor(props) {
+		super(props);
+		this.mesRef = React.createRef();
+	}
+	
+	componentDidMount() {
+		this.scrollToBottom();
+	}
+	
+	componentDidUpdate() {
+		this.scrollToBottom();
+	}
+
+	scrollToBottom = () => {
+		if (this.mesRef.current) {
+			this.mesRef.current.scrollTop = this.mesRef.current.scrollHeight;
+		} 
+		else {
+			console.log("no current!");
+		}
+	};
+
+	onChatMessageSubmit = e => {
+		e.preventDefault();
+		let message_content = e.target.message_textarea.value;
+		e.target.message_textarea.value = '';
+		this.props.sendMessage(message_content, this.props.chat, this.props.user);
+	}
+
 	render() {
 		return (
 
@@ -46,7 +78,7 @@ class ChatWindow extends Component {
 											</div>
 										</div>
 									</div>
-									<div className="content" id="content">
+									<div className="content" id="content" ref={this.mesRef}>
 										<div className="container">
 											<div className="col-md-12">
 												{/* <div className="date">
@@ -71,6 +103,7 @@ class ChatWindow extends Component {
 														: <p className="text-center">Send a message now!</p>
 
 												}
+												
 												{/* <div className="message me">
 													<div className="text-main">
 														<div className="text-group me">
@@ -112,8 +145,8 @@ class ChatWindow extends Component {
 									<div className="container">
 										<div className="col-md-12">
 											<div className="bottom">
-												<form className="position-relative w-100">
-													<textarea className="form-control" placeholder="Start typing for reply..." rows="1"></textarea>
+												<form onSubmit={this.onChatMessageSubmit} className="position-relative w-100">
+													<textarea className="form-control" name="message_textarea" placeholder="Start typing for reply..." rows="1"></textarea>
 													<button className="btn emoticons"><i className="material-icons">insert_emoticon</i></button>
 													<button type="submit" className="btn send"><i className="material-icons">send</i></button>
 												</form>
@@ -315,13 +348,14 @@ const mapStateToProps = state => {
 	};
 };
 
-// const mapDispatchToProps = dispatch => {
-// 	return {
-// 		setCurrentChat: (chat) =>
-// 			dispatch(actions.chatSelected(chat))
-// 	};
-// };
+const mapDispatchToProps = dispatch => {
+	return {
+		sendMessage: (message_content, chat, username) =>
+			dispatch(actions.chatMessageSend(message_content, chat, username))
+	};
+};
 
 export default connect(
-	mapStateToProps
+	mapStateToProps,
+	mapDispatchToProps
 )(ChatWindow);

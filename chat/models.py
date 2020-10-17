@@ -5,10 +5,8 @@ from django.contrib.auth.models import User
 class Message(models.Model):
     text_content = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
-    chat = models.ForeignKey(
-        'Chat', 
-        on_delete=models.CASCADE, 
-        related_name='messages')
+    chat = models.ForeignKey('Chat', on_delete=models.CASCADE, 
+                             related_name='messages')
     sender = models.ForeignKey('Customer', null=True, on_delete=models.SET_NULL)
 
     def __str__(self):
