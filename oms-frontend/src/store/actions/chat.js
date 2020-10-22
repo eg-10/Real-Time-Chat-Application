@@ -13,7 +13,6 @@ export const chatInit = (chats, contacts) => {
 };
 
 export const chatSelected = (chat) => {
-	console.log("sealected chat",chat);
 	return {
 		type: actionTypes.CHAT_SELECTED,
 		chat: chat
@@ -45,17 +44,37 @@ export const chatMessageRecieve = (message) => {
 	}
 }
 
+export const chatAddContactStart = () => {
+	return {
+		type: actionTypes.CHAT_ADD_CONTACT_START,
+	}
+}
+
+export const chatAddContactSuccess = contacts => {
+	return {
+		type: actionTypes.CHAT_ADD_CONTACT_SUCCESS,
+		contacts: contacts,
+	}
+}
+
+export const chatAddContactFail = error => {
+	return {
+		type: actionTypes.CHAT_ADD_CONTACT_FAIL,
+		error: error,
+	}
+}
+
 export const chatsConnectAndInit = (chats, contacts) => {
 	return dispatch => {
 		try {
-			for ( let chat of chats ) {
+			for (let chat of chats) {
 				let wss = new WebSocketService();
 				wss.connect(chat.id);
 				chat.webSocketService = wss;
 			}
 			dispatch(chatInit(chats, contacts));
 		}
-		catch(err) {
+		catch (err) {
 			console.log(err.message);
 		}
 	}
@@ -69,9 +88,37 @@ export const chatMessageSend = (message_content, chat, username) => {
 			chat.webSocketService.sendNewMessage(message_content, username);
 			dispatch(chatSendMessageSuccess());
 		}
-		catch(err) {
+		catch (err) {
 			console.log(err.message);
 			dispatch(chatSendMessageFail());
 		}
 	};
+}
+
+export const addContact = (contact_username, token) => {
+	return dispatch => {
+		dispatch(chatAddContactStart());
+		token = 'Token ' + token;
+		console.log(contact_username);
+		axios.post(`${HOST_URL}/api/add-contact/`, {
+			username: contact_username
+		}, {
+			headers: {
+				Authorization: token
+			}
+		})
+			.then(response => {
+				console.log(response);
+				if (response.data.contacts) {
+					dispatch(chatAddContactSuccess(response.data.contacts));
+				}
+				else {
+					dispatch(chatAddContactFail("Please enter a valid username!"));
+				}
+			})
+			.catch(err => {
+				console.log(err);
+				dispatch(chatAddContactFail("Please enter a valid username!"));
+			});
+	}
 }

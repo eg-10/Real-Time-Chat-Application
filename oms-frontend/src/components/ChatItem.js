@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import '../css/swipe.min.css';
 
 import * as actions from '../store/actions/chat'
@@ -8,16 +9,15 @@ class ChatItem extends Component {
     render() {
         return (
 
-            <a
+            <Link
                 onClick={() => {
                     console.log("chat clicked!");
                     this.props.setCurrentChat(this.props.chat);
                 }}
-                href="#chat-layout"
+                to="/#chat-layout"
                 className={
                     this.props.active ? "filterDiscussions all unread single active" : "filterDiscussions all unread single"
-                } 
-                role="tab">
+                }>
                 <img className="avatar-md" src={require("../img/avatars/avatar-female-1.jpg")} data-toggle="tooltip" data-placement="top" title="Janette" alt="avatar" />
                 {/* <div className="status">
                     <i className="material-icons online">fiber_manual_record</i>
@@ -30,7 +30,7 @@ class ChatItem extends Component {
                     <span>{this.props.time}</span>
                     <p>{this.props.last_message}</p>
                 </div>
-            </a>
+            </Link>
 
         );
     }

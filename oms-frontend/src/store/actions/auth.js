@@ -35,7 +35,7 @@ export const logout = () => {
 
 export const authLogout = (token) => {
 	return dispatch => {
-		token = 'Token '+token;
+		token = 'Token ' + token;
 		axios
 			.post(`${HOST_URL}/api/auth/logout/`, {}, {
 				headers: {
@@ -63,11 +63,10 @@ export const checkAuthTimeout = expirationTime => {
 export const authLogin = (username, password) => {
 	return dispatch => {
 		dispatch(authStart());
-		axios
-			.post(`${HOST_URL}/api/auth/login/`, {
-				username: username,
-				password: password
-			})
+		axios.post(`${HOST_URL}/api/auth/login/`, {
+			username: username,
+			password: password
+		})
 			.then(response => {
 				console.log(response.data);
 				const token = response.data.token;

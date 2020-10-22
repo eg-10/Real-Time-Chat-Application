@@ -47,7 +47,7 @@ class ChatWindow extends Component {
 						{/* <!-- Start of Chat --> */}
 						{
 							this.props.active ?
-								<div className="chat" id="chat1">
+								<div className="chat">
 									<div className="top">
 										<div className="container">
 											<div className="col-md-12">

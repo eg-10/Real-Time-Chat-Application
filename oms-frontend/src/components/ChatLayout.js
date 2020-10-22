@@ -5,7 +5,8 @@ import { connect } from "react-redux";
 import {Navigation} from './Navigation';
 import ChatWindow from './ChatWindow';
 import { Sidebar } from './Sidebar';
-import { Redirect } from 'react-router-dom';
+import { Redirect, Route, Switch } from 'react-router-dom';
+import Contacts from './Contacts';
 
 class ChatLayout extends Component{
     render(){
@@ -15,7 +16,10 @@ class ChatLayout extends Component{
                 <div className="layout" id="chat-layout">
 					<Navigation />
 					<Sidebar />
-					<ChatWindow />
+                    <Switch>
+                        <Route path="/contacts" component={Contacts} />
+                        <Route path="/" component={ChatWindow} />
+                    </Switch>
                 </div>   
             </div>
             : <Redirect to="/login" />

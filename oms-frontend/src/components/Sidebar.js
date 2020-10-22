@@ -13,12 +13,7 @@ export class Sidebar extends Component{
                             <div className="container">
                                 <div className="col-md-12">
                                     <div className="tab-content">
-                                        
-                                       	<Contacts/>
 										<Discussions/>
-										<Notification/>
-										<Setting/>
-										
 									</div>
                                	</div>
                         	</div>

@@ -49,6 +49,12 @@ class CustomerBasicSerializer(serializers.ModelSerializer):
         fields = ['user']
 
 
+class CustomerEditSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Customer
+        fields = ['contacts']
+
 class MessageSerializer(serializers.ModelSerializer):
     sender = CustomerBasicSerializer()
 
@@ -67,7 +73,7 @@ class ChatSerializer(serializers.ModelSerializer):
 
 
 class CustomerDetailSerializer(serializers.ModelSerializer):
-    contacts = CustomerBasicSerializer(many=True)
+    contacts = CustomerBasicSerializer(many=True, read_only=True)
     chats = ChatSerializer(many=True)
 
     class Meta:

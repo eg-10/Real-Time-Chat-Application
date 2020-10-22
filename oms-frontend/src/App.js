@@ -11,6 +11,8 @@ import Header from './components/HeaderComponent';
 import ChatWindow from './components/ChatLayout';
 import { render } from 'react-dom';
 import Logout from './components/Logout';
+import { Contacts } from './components/Contacts';
+import ChatLayout from './components/ChatLayout';
 
 class App extends Component {
 
@@ -24,8 +26,7 @@ class App extends Component {
 					<Route exact path='/signup' component={Signup}></Route>
 					<Route exact path='/login' component={Signin}></Route>
 					<Route exact path='/logout' component={Logout}></Route>
-					<Route path='/' component={ChatWindow}></Route>
-					
+					<Route path='/' component={ChatLayout}></Route>
 				</Switch>
 			</Router>
 	
