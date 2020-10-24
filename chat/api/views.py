@@ -1,4 +1,5 @@
 from django.db.models import query
+from django.http import request
 from rest_framework import generics
 from rest_framework import serializers
 from rest_framework.views import APIView
@@ -9,7 +10,7 @@ from knox.auth import TokenAuthentication
 from knox.models import AuthToken
 
 from chat.api.serializers import (
-    CustomerBasicSerializer, 
+    ChatBasicSerializer, CustomerBasicSerializer, 
     ChatSerializer,
     MessageSerializer,
     UserDetailSerializer,
@@ -68,6 +69,24 @@ class AddContactAPIView(generics.GenericAPIView):
             return Response({
                 "detail": "Please enter a valid username!",
             })
+
+
+class ChatCreateAPIView(generics.GenericAPIView):
+    serializer_class = ChatBasicSerializer
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request, *args, **kwargs):
+        chat = Chat.objects.create(name=request.data['name'])
+        for id in request.data['participants']:
+            chat.participants.add(Customer.objects.get(id=id))
+        return Response(
+            ChatSerializer(
+                        chat, 
+                        context=self.get_serializer_context()
+                    ).data,
+            )
+        
 
 
 class ContactsListView(generics.ListAPIView):

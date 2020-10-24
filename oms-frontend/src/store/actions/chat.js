@@ -64,13 +64,36 @@ export const chatAddContactFail = error => {
 	}
 }
 
+export const chatCreateGroupStart = () => {
+	return {
+		type: actionTypes.CHAT_CREATE_GROUP_START,
+	}
+}
+
+export const chatCreateGroupSuccess = new_chat => {
+	return {
+		type: actionTypes.CHAT_CREATE_GROUP_SUCCESS,
+		new_chat: new_chat,
+	}
+}
+
+export const chatCreateGroupFail = () => {
+	return {
+		type: actionTypes.CHAT_CREATE_GROUP_FAIL,
+	}
+}
+
+export const chatConnectWebSocket = chat => {
+	let wss = new WebSocketService();
+	wss.connect(chat.id);
+	chat.webSocketService = wss;
+}
+
 export const chatsConnectAndInit = (chats, contacts) => {
 	return dispatch => {
 		try {
 			for (let chat of chats) {
-				let wss = new WebSocketService();
-				wss.connect(chat.id);
-				chat.webSocketService = wss;
+				chatConnectWebSocket(chat);
 			}
 			dispatch(chatInit(chats, contacts));
 		}
@@ -99,7 +122,6 @@ export const addContact = (contact_username, token) => {
 	return dispatch => {
 		dispatch(chatAddContactStart());
 		token = 'Token ' + token;
-		console.log(contact_username);
 		axios.post(`${HOST_URL}/api/add-contact/`, {
 			username: contact_username
 		}, {
@@ -119,6 +141,31 @@ export const addContact = (contact_username, token) => {
 			.catch(err => {
 				console.log(err);
 				dispatch(chatAddContactFail("Please enter a valid username!"));
+			});
+	}
+}
+
+export const createGroup = (name, participants, token) => {
+	return dispatch => {
+		dispatch(chatCreateGroupStart());
+		token = 'Token ' + token;
+		axios.post(`${HOST_URL}/api/chats/create/`, {
+			name: name,
+			participants: participants
+		}, {
+			headers: {
+				Authorization: token
+			}
+		})
+			.then(response => {
+				console.log(response);
+				let chat = response.data;
+				chatConnectWebSocket(chat);
+				dispatch(chatCreateGroupSuccess(chat));
+			})
+			.catch(err => {
+				console.log(err);
+				dispatch(chatCreateGroupFail());
 			});
 	}
 }

@@ -1,5 +1,6 @@
 from django.contrib.auth import authenticate
 from django.db.models import fields
+from django.http import request
 
 from rest_framework import serializers
 
@@ -38,7 +39,7 @@ class LoginSerializer(serializers.Serializer):
 class UserBasicSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["username", "first_name", "last_name", "email"]
+        fields = ["id", "username", "first_name", "last_name", "email"]
 
 
 class CustomerBasicSerializer(serializers.ModelSerializer):
@@ -46,7 +47,7 @@ class CustomerBasicSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Customer
-        fields = ['user']
+        fields = ['id', 'user']
 
 
 class CustomerEditSerializer(serializers.ModelSerializer):
@@ -63,9 +64,16 @@ class MessageSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class ChatBasicSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Chat
+        fields = '__all__'
+
+
 class ChatSerializer(serializers.ModelSerializer):
-    messages = MessageSerializer(many=True)
-    participants = CustomerBasicSerializer(many=True)
+    messages = MessageSerializer(many=True, read_only=True)
+    participants = CustomerBasicSerializer(many=True, read_only=True)
 
     class Meta:
         model = Chat
@@ -78,7 +86,7 @@ class CustomerDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Customer
-        fields=["contacts", "chats"]
+        fields=["id", "contacts", "chats"]
 
 
 class UserDetailSerializer(serializers.ModelSerializer):

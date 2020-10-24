@@ -17,11 +17,13 @@ class Message(models.Model):
 
 
 class Chat(models.Model):
-    last_active = models.DateTimeField(auto_now=True)
+    name = models.CharField(max_length=200, null=True, blank=True)
     participants = models.ManyToManyField('Customer', related_name='chats')
+    last_active = models.DateTimeField(auto_now=True)
+    is_group = models.BooleanField(default=True)
 
     class Meta:
-        ordering = ['-last_active', '-pk']
+        ordering = ['-last_active', 'name', '-pk']
 
     def __str__(self):
         return str([str(p) for p in self.participants.all()])

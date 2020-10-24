@@ -5,7 +5,8 @@ const initialState = {
   token: null,
   username: null,
   error: null,
-  loading: false
+  loading: false,
+  customer_id: null,
 };
 
 const authStart = (state, action) => {
@@ -19,6 +20,7 @@ const authSuccess = (state, action) => {
   return updateObject(state, {
     token: action.token,
     username: action.username,
+    customer_id: action.customer_id,
     error: null,
     loading: false
   });

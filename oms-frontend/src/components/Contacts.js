@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 import GroupAddIcon from '@material-ui/icons/GroupAdd';
 import '../css/swipe.min.css';
 import { connect } from 'react-redux';
 import { CircularProgress, Dialog } from '@material-ui/core';
+import Select from 'react-select';
 
 import * as actions from '../store/actions/chat';
 
@@ -14,6 +15,39 @@ class Contacts extends Component {
 
     state = {
         open_add_contact_dialog: false,
+        open_create_group_dialog: false,
+        contact_options: [],
+        selectedOptions: []
+    }
+
+    componentDidMount() {
+        let contact_options = this.getContactOptions();
+        this.setState({ contact_options });
+    }
+
+    componentDidUpdate(previousProps, previousState) {
+        if (previousProps.contacts != this.props.contacts) {
+            let contact_options = this.getContactOptions();
+            this.setState({ contact_options });
+        }
+    }
+
+    getContactOptions = () => {
+        let options = [];
+        if (this.props.contacts) {
+            this.props.contacts.map(contact => {
+                options.push({
+                    value: contact.id,
+                    label: (
+                        contact.user.first_name + ' ' +
+                        contact.user.last_name + ' (' + contact.user.username
+                        + ')'
+                    )
+                });
+            });
+        }
+        console.log("Contact Options: ", options);
+        return options;
     }
 
     handleOpenAddContactDialog = () => {
@@ -22,6 +56,14 @@ class Contacts extends Component {
 
     handleCloseAddContactDialog = () => {
         this.setState({ open_add_contact_dialog: false });
+    }
+
+    handleOpenCreateGroupDialog = () => {
+        this.setState({ open_create_group_dialog: true });
+    }
+
+    handleCloseCreateGroupDialog = () => {
+        this.setState({ open_create_group_dialog: false });
     }
 
     handleAddNewContact = e => {
@@ -33,81 +75,126 @@ class Contacts extends Component {
         this.handleCloseAddContactDialog();
     }
 
+    handleSelectGroupContact = selectedOptions => {
+        this.setState({ selectedOptions });
+    }
+
+    handleCreateNewGroup = e => {
+        e.preventDefault();
+        let participants = [];
+        this.state.selectedOptions.map(opt => {
+            participants.push(opt.value);
+        });
+        participants.push(this.props.customer_id);
+        console.log("participants", participants);
+        this.props.createNewGroup(e.target.group_name.value, participants, this.props.token);
+        this.handleCloseCreateGroupDialog();
+    }
+
     render() {
         return (
-            <div className="main">
-                <div className="tab-content" id="nav-tabContent">
-                    <div className="babble tab-pane fade active show" id="list-chat" role="tabpanel" aria-labelledby="list-chat-list">
-                        <div className="chat">
-                            <div className="top">
-                                <div className="container">
-                                    <div className="col-md-12">
-                                        <div className="inside">
-                                            <h1 className="text-dark">Contacts</h1>
-                                            <div className="ml-auto">
-                                                <Fab className="mr-4" style={{ backgroundColor: "#2196F3", outline: "none" }}>
-                                                    <GroupAddIcon style={{ fill: "white" }} />
-                                                </Fab>
-                                                <Fab
-                                                    style={{ backgroundColor: "#2196F3", outline: "none" }}
-                                                    onClick={this.handleOpenAddContactDialog}>
-                                                    <AddIcon style={{ fill: "white" }} />
-                                                </Fab>
-                                                <Dialog open={this.state.open_add_contact_dialog} onClose={this.handleCloseAddContactDialog} >
-                                                    <div className="p-5">
-                                                        <form onSubmit={this.handleAddNewContact} className="position-relative w-100">
-                                                            <h1>Add a New Contact</h1>
-                                                            <hr />
-
-                                                            <input name="new_contact_username" type="text" className="form-control" placeholder="Enter username..." required></input>
-                                                            <br />
-                                                            <button type="submit" className="btn button" >Add</button>
-                                                        </form>
-                                                    </div>
-                                                </Dialog>
+            this.props.chats_loading ?
+                <Redirect to="/" /> :
+                <div className="main">
+                    <div className="tab-content" id="nav-tabContent">
+                        <div className="babble tab-pane fade active show" id="list-chat" role="tabpanel" aria-labelledby="list-chat-list">
+                            <div className="chat">
+                                <div className="top">
+                                    <div className="container">
+                                        <div className="col-md-12">
+                                            <div className="inside">
+                                                <h1 className="text-dark">Contacts</h1>
+                                                <div className="ml-auto">
+                                                    <Fab
+                                                        className="mr-4"
+                                                        style={{ backgroundColor: "#2196F3", outline: "none" }}
+                                                        onClick={this.handleOpenCreateGroupDialog}>
+                                                        <GroupAddIcon style={{ fill: "white" }} />
+                                                    </Fab>
+                                                    <Fab
+                                                        style={{ backgroundColor: "#2196F3", outline: "none" }}
+                                                        onClick={this.handleOpenAddContactDialog}>
+                                                        <AddIcon style={{ fill: "white" }} />
+                                                    </Fab>
+                                                    <Dialog open={this.state.open_add_contact_dialog} onClose={this.handleCloseAddContactDialog} >
+                                                        <div className="p-5">
+                                                            <form onSubmit={this.handleAddNewContact} className="position-relative w-100">
+                                                                <h1>Add a New Contact</h1>
+                                                                <hr />
+                                                                <input name="new_contact_username" type="text" className="form-control" placeholder="Enter username..." required></input>
+                                                                <br />
+                                                                <button type="submit" className="btn button" >Add</button>
+                                                            </form>
+                                                        </div>
+                                                    </Dialog>
+                                                    <Dialog
+                                                        open={this.state.open_create_group_dialog}
+                                                        onClose={this.handleCloseCreateGroupDialog}
+                                                        fullWidth={true}
+                                                        maxWidth="sm"
+                                                    >
+                                                        <div className="p-5">
+                                                            <form onSubmit={this.handleCreateNewGroup} className="position-relative w-100">
+                                                                <h1>Create a Group Chat</h1>
+                                                                <hr />
+                                                                <input name="group_name" type="text" className="form-control" placeholder="Enter group name..." required></input>
+                                                                <br />
+                                                                <Select
+                                                                    isMulti
+                                                                    placeholder="Select the Members of Group..."
+                                                                    onChange={this.handleSelectGroupContact}
+                                                                    options={this.state.contact_options}
+                                                                    closeMenuOnSelect={false}
+                                                                />
+                                                                <br />
+                                                                <button type="submit" className="btn button" >Create</button>
+                                                            </form>
+                                                        </div>
+                                                    </Dialog>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div className="content" id="content">
-                                <div className="container mt-0">
-                                    <div className="col-md-12">
-                                        <div className="contacts">
-                                            <div className="list-group text-dark" id="contacts" role="tablist">
-                                                {
-                                                    this.props.error ?
-                                                        <p className="text-center text-danger mb-2">{this.props.error}</p>
-                                                        : null
-                                                }
-                                                {
-                                                    this.props.contacts_loading ? 
-                                                    <p className="text-center mb-2"><CircularProgress /></p> 
-                                                    : null
-                                                }
+                                <div className="content" id="content">
+                                    <div className="container mt-0">
+                                        <div className="col-md-12">
+                                            <div className="contacts">
+                                                <div className="list-group text-dark" id="contacts" role="tablist">
+                                                    {
+                                                        this.props.error ?
+                                                            <p className="text-center text-danger mb-2">{this.props.error}</p>
+                                                            : null
+                                                    }
+                                                    {
+                                                        this.props.contacts_loading ?
+                                                            <p className="text-center mb-2"><CircularProgress /></p>
+                                                            : null
+                                                    }
 
-                                                {
-                                                    this.props.contacts && this.props.contacts.length ?
-                                                        this.props.contacts.map(contact => {
-                                                            return (
-                                                                <Link to="/#chat-layout" className="pt-2 pb-2 filterMembers all online contact border-bottom mb-2">
-                                                                    <img className="avatar-lg float-left mr-5" src={require("../img/avatars/avatar-female-1.jpg")} title="Janette" alt="avatar" />
-                                                                    <div className="data float-left ml-5">
-                                                                        <h2>{contact.user.first_name} {contact.user.last_name}</h2>
-                                                                        <p>{contact.user.username}</p>
-                                                                    </div>
-                                                                </Link>
-                                                            );
-                                                        })
-                                                        : <p className="text-center">You haven't added any contacts yet!</p>
-                                                }
-                                                {/* <Link to="#" className="filterMembers all online contact border-bottom mb-2">
-                                                    <img className="avatar-lg float-left mr-5" src={require("../img/avatars/avatar-female-1.jpg")} title="Janette" alt="avatar" />
-                                                    <div className="data float-left ml-5">
-                                                        <h2>Janette Dalton</h2>
-                                                        <p>Sofia, Bulgaria</p>
-                                                    </div>
-                                                </Link> */}
+                                                    {
+                                                        this.props.contacts && this.props.contacts.length ?
+                                                            this.props.contacts.map(contact => {
+                                                                return (
+                                                                    <Link to="/#chat-layout" className="pt-2 pb-2 filterMembers all online contact border-bottom mb-2">
+                                                                        <img className="avatar-lg float-left mr-5" src={require("../img/avatars/avatar-female-1.jpg")} title="Janette" alt="avatar" />
+                                                                        <div className="data float-left ml-5">
+                                                                            <h2>{contact.user.first_name} {contact.user.last_name}</h2>
+                                                                            <p>{contact.user.username}</p>
+                                                                        </div>
+                                                                    </Link>
+                                                                );
+                                                            })
+                                                            : <p className="text-center">You haven't added any contacts yet!</p>
+                                                    }
+                                                    {/* <Link to="#" className="filterMembers all online contact border-bottom mb-2">
+                                                        <img className="avatar-lg float-left mr-5" src={require("../img/avatars/avatar-female-1.jpg")} title="Janette" alt="avatar" />
+                                                        <div className="data float-left ml-5">
+                                                            <h2>Janette Dalton</h2>
+                                                            <p>Sofia, Bulgaria</p>
+                                                        </div>
+                                                    </Link> */}
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -116,7 +203,6 @@ class Contacts extends Component {
                         </div>
                     </div>
                 </div>
-            </div>
         );
     }
 }
@@ -127,6 +213,8 @@ const mapStateToProps = state => {
         error: state.chat.error,
         token: state.auth.token,
         contacts: state.chat.contacts,
+        customer_id: state.auth.customer_id,
+        chats_loading: state.chat.chats_loading,
     };
 };
 
@@ -134,6 +222,8 @@ const mapDispatchToProps = dispatch => {
     return {
         addNewContact: (contact_username, token) =>
             dispatch(actions.addContact(contact_username, token)),
+        createNewGroup: (name, participants, token) =>
+            dispatch(actions.createGroup(name, participants, token)),
     };
 };
 

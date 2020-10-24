@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 
 import * as actions from '../store/actions/chat'
 import ChatItem from './ChatItem';
+import { CircularProgress } from '@material-ui/core';
 
 class Discussions extends Component {
 
@@ -25,6 +26,11 @@ class Discussions extends Component {
 				<div className="discussions">
 					<h1>Chats</h1>
 					<div className="list-group" id="chats" role="tablist">
+						{
+							this.props.chats_loading ?
+								<p className="text-center mb-2"><CircularProgress /></p>
+								: null
+						}
 						{/* <a href="#list-chat" className="filterDiscussions all read single" id="list-chat-list2" data-toggle="list" role="tab">
 							<img className="avatar-md" src={require("../img/avatars/avatar-female-2.jpg")} data-toggle="tooltip" data-placement="top" title="Lean" alt="avatar" />
 							<div className="status">
@@ -48,30 +54,18 @@ class Discussions extends Component {
 												new Date(chat.last_active.split("T").join(" ")).toLocaleTimeString()
 											}
 											last_message={
-												chat.messages.length ?
+												chat.messages && chat.messages.length ?
 													chat.messages[chat.messages.length - 1].text_content
 													: null
 											}
 											chat={chat}
-											
+
 										/>
 									);
 								})
 								: <p className="text-center">You haven't started chattting yet!</p>
 						}
 						<a className="filterDiscussions all unread single active">
-							{/* <img className="avatar-md" src={require("../img/avatars/avatar-female-1.jpg")} data-toggle="tooltip" data-placement="top" title="Janette" alt="avatar" />
-							<div className="status">
-								<i className="material-icons online">fiber_manual_record</i>
-							</div>
-							<div className="new bg-yellow">
-								<span>+7</span>
-							</div>
-							<div className="data">
-								<h5>Janette Dalton</h5>
-								<span>Mon</span>
-								<p>A new feature has been updated to your account. Check it out...</p>
-							</div> */}
 						</a>
 						{/* <a href="#list-chat" className="filterDiscussions all unread single active">
 							<img className="avatar-md" src={require("../img/avatars/avatar-female-1.jpg")} data-toggle="tooltip" data-placement="top" title="Janette" alt="avatar" />
@@ -99,6 +93,7 @@ const mapStateToProps = state => {
 		chats: state.chat.chats,
 		contacts: state.chat.contacts,
 		current_chat: state.chat.current_chat,
+		chats_loading: state.chat.chats_loading
 	};
 };
 

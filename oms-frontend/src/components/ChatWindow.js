@@ -88,7 +88,7 @@ class ChatWindow extends Component {
 										</div> */}
 												{/* <Message message="We've got some killer ideas kicking about already." time="09:46 AM" /> */}
 												{
-													this.props.chat && this.props.chat.messages.length ?
+													this.props.chat && this.props.chat.messages && this.props.chat.messages.length ?
 														this.props.chat.messages.map(message => {
 															return (
 																<Message
@@ -146,7 +146,7 @@ class ChatWindow extends Component {
 										<div className="col-md-12">
 											<div className="bottom">
 												<form onSubmit={this.onChatMessageSubmit} className="position-relative w-100">
-													<textarea className="form-control" name="message_textarea" placeholder="Start typing for reply..." rows="1"></textarea>
+													<textarea className="form-control" name="message_textarea" placeholder="Start typing for reply..." rows="1" required></textarea>
 													<button className="btn emoticons"><i className="material-icons">insert_emoticon</i></button>
 													<button type="submit" className="btn send"><i className="material-icons">send</i></button>
 												</form>

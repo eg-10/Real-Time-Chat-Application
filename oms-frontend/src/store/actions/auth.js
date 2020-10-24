@@ -9,11 +9,12 @@ export const authStart = () => {
 	};
 };
 
-export const authSuccess = (username, token) => {
+export const authSuccess = (username, token, customer_id) => {
 	return {
 		type: actionTypes.AUTH_SUCCESS,
 		token: token,
-		username: username
+		username: username,
+		customer_id: customer_id,
 	};
 };
 
@@ -71,10 +72,11 @@ export const authLogin = (username, password) => {
 				console.log(response.data);
 				const token = response.data.token;
 				const expirationDate = new Date(new Date().getTime() + 3600 * 1000);
+				const customer_id = response.data.user.customer_profile.id;
 				localStorage.setItem("token", token);
 				localStorage.setItem("username", username);
 				localStorage.setItem("expirationDate", expirationDate);
-				dispatch(authSuccess(username, token));
+				dispatch(authSuccess(username, token, customer_id));
 				dispatch(chatActions.chatsConnectAndInit(
 					response.data.user.customer_profile.chats,
 					response.data.user.customer_profile.contacts
@@ -102,10 +104,11 @@ export const authSignup = (username, password, email, first_name, last_name) => 
 				console.log(response.data);
 				const token = response.data.token;
 				const expirationDate = new Date(new Date().getTime() + 3600 * 1000);
+				const customer_id = response.data.user.customer_profile.id;
 				localStorage.setItem("token", token);
 				localStorage.setItem("username", username);
 				localStorage.setItem("expirationDate", expirationDate);
-				dispatch(authSuccess(username, token));
+				dispatch(authSuccess(username, token, customer_id));
 				dispatch(chatActions.chatInit(
 					response.data.user.customer_profile.chats,
 					response.data.user.customer_profile.contacts

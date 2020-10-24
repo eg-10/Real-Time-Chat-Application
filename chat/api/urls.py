@@ -7,13 +7,15 @@ from chat.api.views import (
     ChatDetailView,
     RegisterAPIView,
     LoginAPIView,
-    AddContactAPIView)
+    AddContactAPIView,
+    ChatCreateAPIView)
 
 
 urlpatterns = [
     path('contacts/', ContactsListView.as_view()),
     path('chats/', ChatsListView.as_view()),
-    path('chat/<int:pk>/', ChatDetailView.as_view()),
+    path('chats/create/', ChatCreateAPIView.as_view()),
+    path('chats/<int:pk>/', ChatDetailView.as_view()),
     path('auth/register/', RegisterAPIView.as_view()),
     path('auth/login/', LoginAPIView.as_view()),
     path('add-contact/', AddContactAPIView.as_view(), name='add-contact'),

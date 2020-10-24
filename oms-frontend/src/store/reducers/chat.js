@@ -7,6 +7,7 @@ const initialState = {
     current_chat: null,
     contacts_loading: false,
     error: null,
+    chats_loading: false,
 };
 
 const chatInit = (state, action) => {
@@ -61,6 +62,26 @@ const chatAddContactFail = (state, action) => {
     });
 };
 
+const chatCreateGroupStart = (state, action) => {
+    return updateObject(state, {
+        chats_loading: true,
+    });
+};
+
+const chatCreateGroupSuccess = (state, action) => {
+    return updateObject(state, {
+        chats_loading: false,
+        chats: [action.new_chat, ...state.chats],
+        current_chat: action.new_chat,
+    });
+};
+
+const chatCreateGroupFail = (state, action) => {
+    return updateObject(state, {
+        chats_loading: false,
+    });
+};
+
 const reducer = (state = initialState, action) => {
     switch (action.type) {
         case actionTypes.CHAT_INIT:
@@ -75,6 +96,12 @@ const reducer = (state = initialState, action) => {
             return chatAddContactSuccess(state, action);
         case actionTypes.CHAT_ADD_CONTACT_FAIL:
             return chatAddContactFail(state, action);
+        case actionTypes.CHAT_CREATE_GROUP_START:
+            return chatCreateGroupStart(state, action);
+        case actionTypes.CHAT_CREATE_GROUP_SUCCESS:
+            return chatCreateGroupSuccess(state, action);
+        case actionTypes.CHAT_CREATE_GROUP_FAIL:
+            return chatCreateGroupFail(state, action);
         default:
             return state;
     }
