@@ -77,16 +77,14 @@ class ChatCreateAPIView(generics.GenericAPIView):
     permission_classes = (IsAuthenticated,)
 
     def post(self, request, *args, **kwargs):
-        chat = Chat.objects.create(name=request.data['name'])
+        chat = Chat.objects.create(
+            name=request.data.get('name', ''), 
+            is_group=request.data.get('is_group', True))
         for id in request.data['participants']:
             chat.participants.add(Customer.objects.get(id=id))
-        return Response(
-            ChatSerializer(
-                        chat, 
-                        context=self.get_serializer_context()
-                    ).data,
-            )
-        
+        return Response(ChatSerializer(
+            chat, 
+            context=self.get_serializer_context()).data,)        
 
 
 class ContactsListView(generics.ListAPIView):

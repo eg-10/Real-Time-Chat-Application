@@ -8,6 +8,11 @@ import { CircularProgress } from '@material-ui/core';
 
 class Discussions extends Component {
 
+	getPCName = chat => {
+		let p = chat.participants.find(p => p.id !== this.props.customer_id);
+		return p.user.first_name + ' ' + p.user.last_name;
+	}
+
 	render() {
 		return (
 			<div id="discussions" className="tab-pane fade active show">
@@ -49,7 +54,7 @@ class Discussions extends Component {
 										<ChatItem
 											key={chat.id}
 											active={this.props.current_chat && this.props.current_chat.id === chat.id}
-											name={"Chat " + chat.id}
+											name={chat.is_group ? chat.name : this.getPCName(chat)}
 											time={
 												new Date(chat.last_active.split("T").join(" ")).toLocaleTimeString()
 											}
@@ -93,7 +98,8 @@ const mapStateToProps = state => {
 		chats: state.chat.chats,
 		contacts: state.chat.contacts,
 		current_chat: state.chat.current_chat,
-		chats_loading: state.chat.chats_loading
+		chats_loading: state.chat.chats_loading,
+		customer_id: state.auth.customer_id,
 	};
 };
 

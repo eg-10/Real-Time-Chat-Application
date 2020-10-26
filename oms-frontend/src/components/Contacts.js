@@ -91,6 +91,10 @@ class Contacts extends Component {
         this.handleCloseCreateGroupDialog();
     }
 
+    handleContactSelected = contact_id => {
+        this.props.contactSelected(contact_id, this.props.customer_id, this.props.chats, this.props.token);
+    }
+
     render() {
         return (
             this.props.chats_loading ?
@@ -176,7 +180,12 @@ class Contacts extends Component {
                                                         this.props.contacts && this.props.contacts.length ?
                                                             this.props.contacts.map(contact => {
                                                                 return (
-                                                                    <Link to="/#chat-layout" className="pt-2 pb-2 filterMembers all online contact border-bottom mb-2">
+                                                                    <Link 
+                                                                        key={contact.id}
+                                                                        to="/#chat-layout" 
+                                                                        className="pt-2 pb-2 filterMembers all online contact border-bottom mb-2"
+                                                                        onClick={() => this.handleContactSelected(contact.id)}
+                                                                    >
                                                                         <img className="avatar-lg float-left mr-5" src={require("../img/avatars/avatar-female-1.jpg")} title="Janette" alt="avatar" />
                                                                         <div className="data float-left ml-5">
                                                                             <h2>{contact.user.first_name} {contact.user.last_name}</h2>
@@ -212,6 +221,7 @@ const mapStateToProps = state => {
         contacts_loading: state.chat.contacts_loading,
         error: state.chat.error,
         token: state.auth.token,
+        chats: state.chat.chats,
         contacts: state.chat.contacts,
         customer_id: state.auth.customer_id,
         chats_loading: state.chat.chats_loading,
@@ -224,6 +234,8 @@ const mapDispatchToProps = dispatch => {
             dispatch(actions.addContact(contact_username, token)),
         createNewGroup: (name, participants, token) =>
             dispatch(actions.createGroup(name, participants, token)),
+        contactSelected: (contact_id, user_id, chats, token) =>
+            dispatch(actions.contactSelected(contact_id, user_id, chats, token)),
     };
 };
 

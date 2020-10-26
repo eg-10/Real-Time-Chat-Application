@@ -37,6 +37,11 @@ class ChatWindow extends Component {
 		this.props.sendMessage(message_content, this.props.chat, this.props.user);
 	}
 
+	getPCName = chat => {
+		let p = chat.participants.find(p => p.id !== this.props.customer_id);
+		return p.user.first_name + ' ' + p.user.last_name;
+	}
+
 	render() {
 		return (
 
@@ -57,7 +62,13 @@ class ChatWindow extends Component {
 												<i className="material-icons online">fiber_manual_record</i>
 											</div> */}
 													<div className="data">
-														<h5><a href="#">Chat {this.props.chat.id}</a></h5>
+														<h5><a href="#">
+														{
+															this.props.chat.is_group ? 
+															this.props.chat.name : 
+															this.getPCName(this.props.chat)
+														}
+														</a></h5>
 														{/* <span>Active now</span> */}
 													</div>
 													{/* <button className="btn connect d-md-block d-none" name="1"><i className="material-icons md-30">phone_in_talk</i></button> */}
@@ -343,6 +354,7 @@ class ChatWindow extends Component {
 const mapStateToProps = state => {
 	return {
 		user: state.auth.username,
+		customer_id: state.auth.customer_id,
 		active: state.chat.current_chat !== null,
 		chat: state.chat.current_chat,
 	};

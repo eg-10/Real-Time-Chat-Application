@@ -82,6 +82,26 @@ const chatCreateGroupFail = (state, action) => {
     });
 };
 
+const chatCreatePCStart = (state, action) => {
+    return updateObject(state, {
+        chats_loading: true,
+    });
+};
+
+const chatCreatePCSuccess = (state, action) => {
+    return updateObject(state, {
+        chats_loading: false,
+        chats: [action.new_chat, ...state.chats],
+        current_chat: action.new_chat,
+    });
+};
+
+const chatCreatePCFail = (state, action) => {
+    return updateObject(state, {
+        chats_loading: false,
+    });
+};
+
 const reducer = (state = initialState, action) => {
     switch (action.type) {
         case actionTypes.CHAT_INIT:
@@ -102,6 +122,12 @@ const reducer = (state = initialState, action) => {
             return chatCreateGroupSuccess(state, action);
         case actionTypes.CHAT_CREATE_GROUP_FAIL:
             return chatCreateGroupFail(state, action);
+        case actionTypes.CHAT_CREATE_PC_START:
+            return chatCreatePCStart(state, action);
+        case actionTypes.CHAT_CREATE_PC_SUCCESS:
+            return chatCreatePCSuccess(state, action);
+        case actionTypes.CHAT_CREATE_PC_FAIL:
+            return chatCreatePCFail(state, action);
         default:
             return state;
     }

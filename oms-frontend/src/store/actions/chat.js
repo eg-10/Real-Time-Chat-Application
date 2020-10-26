@@ -83,6 +83,31 @@ export const chatCreateGroupFail = () => {
 	}
 }
 
+export const chatContactSelected = () => {
+	return {
+		type: actionTypes.CHAT_CONTACT_SELECTED,
+	}
+}
+
+export const chatCreatePCStart = () => {
+	return {
+		type: actionTypes.CHAT_CREATE_PC_START,
+	}
+}
+
+export const chatCreatePCSuccess = new_chat => {
+	return {
+		type: actionTypes.CHAT_CREATE_PC_SUCCESS,
+		new_chat: new_chat,
+	}
+}
+
+export const chatCreatePCFail = () => {
+	return {
+		type: actionTypes.CHAT_CREATE_PC_FAIL,
+	}
+}
+
 export const chatConnectWebSocket = chat => {
 	let wss = new WebSocketService();
 	wss.connect(chat.id);
@@ -167,5 +192,41 @@ export const createGroup = (name, participants, token) => {
 				console.log(err);
 				dispatch(chatCreateGroupFail());
 			});
+	}
+}
+
+export const contactSelected = (contact_id, user_id, chats, token) => {
+	return dispatch => {
+		dispatch(chatContactSelected());
+		token = 'Token ' + token;
+		let pc = chats.find(chat => {
+			return !(chat.is_group) && 
+			chat.participants.some(p => p.id === contact_id);
+		});
+		console.log("PC:", pc);
+		if (!(pc)) {
+			let participants = [contact_id, user_id];
+			dispatch(chatCreatePCStart);
+			axios.post(`${HOST_URL}/api/chats/create/`, {
+				is_group: false,
+				participants: participants
+			}, {
+				headers: {
+					Authorization: token
+				}
+			})
+				.then(response => {
+					console.log(response);
+					let chat = response.data;
+					chatConnectWebSocket(chat);
+					dispatch(chatCreatePCSuccess(chat));
+				})
+				.catch(err => {
+					console.log(err);
+					dispatch(chatCreatePCFail());
+				});
+		} else {
+			dispatch(chatSelected(pc));
+		}
 	}
 }
