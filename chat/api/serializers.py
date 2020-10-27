@@ -47,7 +47,7 @@ class CustomerBasicSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Customer
-        fields = ['id', 'user']
+        fields = ['id', 'user', 'profile_photo']
 
 
 class CustomerEditSerializer(serializers.ModelSerializer):
@@ -86,7 +86,7 @@ class CustomerDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Customer
-        fields=["id", "contacts", "chats"]
+        fields=["id", "contacts", "chats", "profile_photo"]
 
 
 class UserDetailSerializer(serializers.ModelSerializer):

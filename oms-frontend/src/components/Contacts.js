@@ -180,13 +180,20 @@ class Contacts extends Component {
                                                         this.props.contacts && this.props.contacts.length ?
                                                             this.props.contacts.map(contact => {
                                                                 return (
-                                                                    <Link 
+                                                                    <Link
                                                                         key={contact.id}
-                                                                        to="/#chat-layout" 
+                                                                        to="/#chat-layout"
                                                                         className="pt-2 pb-2 filterMembers all online contact border-bottom mb-2"
                                                                         onClick={() => this.handleContactSelected(contact.id)}
                                                                     >
-                                                                        <img className="avatar-lg float-left mr-5" src={require("../img/avatars/avatar-female-1.jpg")} title="Janette" alt="avatar" />
+                                                                        <img
+                                                                            className="avatar-lg float-left mr-5"
+                                                                            src={
+                                                                                contact.profile_photo && contact.profile_photo.length ?
+                                                                                contact.profile_photo
+                                                                                : "no-profile.png"
+                                                                            }
+                                                                            alt="avatar" />
                                                                         <div className="data float-left ml-5">
                                                                             <h2>{contact.user.first_name} {contact.user.last_name}</h2>
                                                                             <p>{contact.user.username}</p>

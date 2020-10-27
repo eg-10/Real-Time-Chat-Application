@@ -2,21 +2,21 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import '../css/swipe.min.css';
 
-import * as actions from '../store/actions/chat' 
+import * as actions from '../store/actions/chat'
 import Message from './Message';
 
 class ChatWindow extends Component {
 
-	
+
 	constructor(props) {
 		super(props);
 		this.mesRef = React.createRef();
 	}
-	
+
 	componentDidMount() {
 		this.scrollToBottom();
 	}
-	
+
 	componentDidUpdate() {
 		this.scrollToBottom();
 	}
@@ -24,7 +24,7 @@ class ChatWindow extends Component {
 	scrollToBottom = () => {
 		if (this.mesRef.current) {
 			this.mesRef.current.scrollTop = this.mesRef.current.scrollHeight;
-		} 
+		}
 		else {
 			console.log("no current!");
 		}
@@ -42,6 +42,11 @@ class ChatWindow extends Component {
 		return p.user.first_name + ' ' + p.user.last_name;
 	}
 
+	getPCDP = chat => {
+		let p = chat.participants.find(p => p.id !== this.props.customer_id);
+		return p.profile_photo && p.profile_photo.length ? p.profile_photo : "no-profile.png";
+	}
+
 	render() {
 		return (
 
@@ -57,17 +62,24 @@ class ChatWindow extends Component {
 										<div className="container">
 											<div className="col-md-12">
 												<div className="inside">
-													<a href="#"><img className="avatar-md" src={require("../img/avatars/avatar-female-5.jpg")} data-toggle="tooltip" data-placement="top" title="Keith" alt="avatar" /></a>
+													<img
+														className="avatar-md"
+														src={
+															this.props.chat.is_group ?
+																"group-no-profile.jpg" :
+																this.getPCDP(this.props.chat)
+														}
+														alt="avatar" />
 													{/* <div className="status">
 												<i className="material-icons online">fiber_manual_record</i>
 											</div> */}
 													<div className="data">
 														<h5><a href="#">
-														{
-															this.props.chat.is_group ? 
-															this.props.chat.name : 
-															this.getPCName(this.props.chat)
-														}
+															{
+																this.props.chat.is_group ?
+																	this.props.chat.name :
+																	this.getPCName(this.props.chat)
+															}
 														</a></h5>
 														{/* <span>Active now</span> */}
 													</div>
@@ -108,13 +120,18 @@ class ChatWindow extends Component {
 																	me={message.sender.user.username === this.props.user}
 																	message={message.text_content}
 																	time={new Date(message.timestamp.split("T").join(" ")).toLocaleTimeString()}
+																	dp_url={
+																		message.sender.profile_photo && message.sender.profile_photo.length ?
+																		message.sender.profile_photo :
+																		"no-profile.png"
+																	}
 																/>
 															);
 														})
 														: <p className="text-center">Send a message now!</p>
 
 												}
-												
+
 												{/* <div className="message me">
 													<div className="text-main">
 														<div className="text-group me">

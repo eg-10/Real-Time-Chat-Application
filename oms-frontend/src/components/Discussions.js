@@ -13,6 +13,11 @@ class Discussions extends Component {
 		return p.user.first_name + ' ' + p.user.last_name;
 	}
 
+	getPCDP = chat => {
+		let p = chat.participants.find(p => p.id !== this.props.customer_id);
+		return p.profile_photo && p.profile_photo.length ?  p.profile_photo : "no-profile.png";
+	}
+
 	render() {
 		return (
 			<div id="discussions" className="tab-pane fade active show">
@@ -57,6 +62,11 @@ class Discussions extends Component {
 											name={chat.is_group ? chat.name : this.getPCName(chat)}
 											time={
 												new Date(chat.last_active.split("T").join(" ")).toLocaleTimeString()
+											}
+											dp_url={
+												chat.is_group ?
+												"group-no-profile.jpg" :
+												this.getPCDP(chat)
 											}
 											last_message={
 												chat.messages && chat.messages.length ?

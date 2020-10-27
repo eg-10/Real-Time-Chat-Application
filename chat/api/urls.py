@@ -2,6 +2,7 @@ from django.urls import path, include
 
 from knox.views import LogoutView
 from chat.api.views import (
+    ChangeProfilePhotoAPIView, 
     ContactsListView, 
     ChatsListView, 
     ChatDetailView,
@@ -19,6 +20,8 @@ urlpatterns = [
     path('auth/register/', RegisterAPIView.as_view()),
     path('auth/login/', LoginAPIView.as_view()),
     path('add-contact/', AddContactAPIView.as_view(), name='add-contact'),
+    path('change-profile-photo/', ChangeProfilePhotoAPIView.as_view(), 
+         name='change-profile-photo'),
     path('auth/logout/', LogoutView.as_view(), name='knox_logout'),
     path('', include('knox.urls')),
     

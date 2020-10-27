@@ -18,7 +18,11 @@ class ChatItem extends Component {
                 className={
                     this.props.active ? "filterDiscussions all unread single active" : "filterDiscussions all unread single"
                 }>
-                <img className="avatar-md" src={require("../img/avatars/avatar-female-1.jpg")} data-toggle="tooltip" data-placement="top" title="Janette" alt="avatar" />
+                <img
+                    className="avatar-md"
+                    src={this.props.dp_url}
+                    alt="avatar" />
+                {/* <img className="avatar-md" src={require("../img/avatars/idaho.jpg")} data-toggle="tooltip" data-placement="top" title="Janette" alt="avatar" /> */}
                 {/* <div className="status">
                     <i className="material-icons online">fiber_manual_record</i>
                 </div> */}
@@ -37,13 +41,13 @@ class ChatItem extends Component {
 }
 
 const mapDispatchToProps = dispatch => {
-	return {
-		setCurrentChat: (chat) =>
-			dispatch(actions.chatSelected(chat))
-	};
+    return {
+        setCurrentChat: (chat) =>
+            dispatch(actions.chatSelected(chat))
+    };
 };
 
 export default connect(
-	null,
-	mapDispatchToProps
+    null,
+    mapDispatchToProps
 )(ChatItem);

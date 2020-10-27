@@ -1,3 +1,4 @@
+import { HOST_URL } from "../../settings";
 import * as actionTypes from "../actions/actionTypes";
 import { updateObject } from "../utilities";
 
@@ -8,14 +9,21 @@ const initialState = {
     contacts_loading: false,
     error: null,
     chats_loading: false,
+    dp_url: null,
 };
 
 const chatInit = (state, action) => {
     console.log("chats", action.chats);
     console.log("contact", action.contacts);
+    // let dp_url = action.dp_url;
+    // if (dp_url && dp_url.length) {
+    //     dp_url = HOST_URL + dp_url;
+    // }
+    console.log("dp url: ", action.dp_url);
     return updateObject(state, {
         chats: action.chats,
         contacts: action.contacts,
+        dp_url: action.dp_url,
     });
 };
 
@@ -102,6 +110,16 @@ const chatCreatePCFail = (state, action) => {
     });
 };
 
+const chatChangeDPSuccess = (state, action) => {
+    let dp_url = action.dp_url;
+    if (dp_url && dp_url.length) {
+        dp_url = HOST_URL + dp_url;
+    }
+    return updateObject(state, {
+        dp_url: dp_url,
+    });
+};
+
 const reducer = (state = initialState, action) => {
     switch (action.type) {
         case actionTypes.CHAT_INIT:
@@ -128,6 +146,8 @@ const reducer = (state = initialState, action) => {
             return chatCreatePCSuccess(state, action);
         case actionTypes.CHAT_CREATE_PC_FAIL:
             return chatCreatePCFail(state, action);
+        case actionTypes.CHAT_CHANGE_DP_SUCCESS:
+            return chatChangeDPSuccess(state, action);
         default:
             return state;
     }

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import '../css/swipe.min.css';
 import { connect } from "react-redux";
 
-import {Navigation} from './Navigation';
+import Navigation from './Navigation';
 import ChatWindow from './ChatWindow';
 import { Sidebar } from './Sidebar';
 import { Redirect, Route, Switch } from 'react-router-dom';

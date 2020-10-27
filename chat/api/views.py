@@ -84,7 +84,23 @@ class ChatCreateAPIView(generics.GenericAPIView):
             chat.participants.add(Customer.objects.get(id=id))
         return Response(ChatSerializer(
             chat, 
-            context=self.get_serializer_context()).data,)        
+            context=self.get_serializer_context()).data,)
+
+
+class ChangeProfilePhotoAPIView(generics.GenericAPIView):
+    serializer_class = ChatBasicSerializer
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request, *args, **kwargs):
+        try:
+            file = request.data['file']
+            request.user.customer_profile.profile_photo = file
+            request.user.customer_profile.save()
+        except Exception as e:
+            print("error:",e)
+        finally:
+            return Response({'profile_photo' : request.user.customer_profile.profile_photo.url})
 
 
 class ContactsListView(generics.ListAPIView):

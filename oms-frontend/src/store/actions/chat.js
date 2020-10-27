@@ -4,11 +4,12 @@ import * as actionTypes from "./actionTypes";
 import { HOST_URL, SOCKET_URL } from "../../settings";
 import { WebSocketService } from '../../websocket'
 
-export const chatInit = (chats, contacts) => {
+export const chatInit = (chats, contacts, dp_url) => {
 	return {
 		type: actionTypes.CHAT_INIT,
 		chats: chats,
 		contacts: contacts,
+		dp_url: dp_url,
 	};
 };
 
@@ -108,19 +109,38 @@ export const chatCreatePCFail = () => {
 	}
 }
 
+export const chatChangeDPStart = () => {
+	return {
+		type: actionTypes.CHAT_CHANGE_DP_START,
+	}
+}
+
+export const chatChangeDPSuccess = dp_url => {
+	return {
+		type: actionTypes.CHAT_CHANGE_DP_SUCCESS,
+		dp_url: dp_url,
+	}
+}
+
+export const chatChangeDPFail = () => {
+	return {
+		type: actionTypes.CHAT_CHANGE_DP_FAIL,
+	}
+}
+
 export const chatConnectWebSocket = chat => {
 	let wss = new WebSocketService();
 	wss.connect(chat.id);
 	chat.webSocketService = wss;
 }
 
-export const chatsConnectAndInit = (chats, contacts) => {
+export const chatsConnectAndInit = (chats, contacts, dp_url) => {
 	return dispatch => {
 		try {
 			for (let chat of chats) {
 				chatConnectWebSocket(chat);
 			}
-			dispatch(chatInit(chats, contacts));
+			dispatch(chatInit(chats, contacts, dp_url));
 		}
 		catch (err) {
 			console.log(err.message);
@@ -228,5 +248,32 @@ export const contactSelected = (contact_id, user_id, chats, token) => {
 		} else {
 			dispatch(chatSelected(pc));
 		}
+	}
+}
+
+export const changeDP = (dp, token) => {
+	return dispatch => {
+		dispatch(chatChangeDPStart());
+		token = 'Token ' + token;
+		let form_data = new FormData();
+		form_data.append('file', dp, dp.name);
+		axios.post(`${HOST_URL}/api/change-profile-photo/`, form_data, {
+			headers: {
+				Authorization: token
+			}
+		})
+			.then(response => {
+				console.log(response);
+				if (response.data.profile_photo) {
+					dispatch(chatChangeDPSuccess(response.data.profile_photo));
+				}
+				else {
+					dispatch(chatChangeDPFail());
+				}
+			})
+			.catch(err => {
+				console.log(err);
+				dispatch(chatChangeDPFail());
+			});
 	}
 }

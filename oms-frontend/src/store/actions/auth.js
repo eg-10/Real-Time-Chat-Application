@@ -79,7 +79,8 @@ export const authLogin = (username, password) => {
 				dispatch(authSuccess(username, token, customer_id));
 				dispatch(chatActions.chatsConnectAndInit(
 					response.data.user.customer_profile.chats,
-					response.data.user.customer_profile.contacts
+					response.data.user.customer_profile.contacts,
+					response.data.user.customer_profile.profile_photo,
 				));
 				dispatch(checkAuthTimeout(3600));
 			})

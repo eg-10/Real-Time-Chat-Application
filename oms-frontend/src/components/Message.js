@@ -8,7 +8,10 @@ export default class Message extends Component {
             <div className={this.props.me ? "message me" : "message"}>
                 {
                     this.props.me ? null :
-                        <img className="avatar-md" src={require("../img/avatars/avatar-female-5.jpg")} data-toggle="tooltip" data-placement="top" title="Keith" alt="avatar" />
+                        <img
+                            className="avatar-md"
+                            src={this.props.dp_url}
+                            alt="avatar" />
                 }
                 <div className="text-main">
                     <div className="text-group">

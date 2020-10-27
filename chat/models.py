@@ -35,6 +35,8 @@ class Customer(models.Model):
         on_delete=models.CASCADE, 
         related_name='customer_profile')
     contacts = models.ManyToManyField(to='self')
+    profile_photo = models.ImageField(upload_to='profile_photos', null=True, 
+                                      blank=True)
 
     class Meta:
         ordering = ['user__first_name', 'user__last_name', 'user__username', '-pk']
