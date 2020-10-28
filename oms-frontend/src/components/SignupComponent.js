@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from "react-redux";
 import * as actions from "../store/actions/auth";
 import { Link } from 'react-router-dom';
+import { CircularProgress } from '@material-ui/core';
 
 export class Signup extends Component {
 
@@ -49,7 +50,7 @@ export class Signup extends Component {
 											<input name="password" type="password" id="inputPassword" className="form-control" placeholder="Password" required></input>
 											<button className="btn icon"><i className="material-icons">lock_outline</i></button>
 										</div>
-										<button type="submit" className="btn button" >Sign Up</button>
+										<button type="submit" className="btn button" >{this.props.loading ? <CircularProgress /> : "Sign Up"}</button>
 										<div className="callout">
 											<span>Already a member? <a href="sign-in.html">Sign In</a></span>
 										</div>
@@ -64,6 +65,12 @@ export class Signup extends Component {
 	}
 }
 
+const mapStateToProps = state => {
+	return {
+		loading: state.auth.loading,
+	};
+};
+
 const mapDispatchToProps = dispatch => {
 	return {
 		signup: (username, email, first_name, last_name, password) =>
@@ -72,6 +79,6 @@ const mapDispatchToProps = dispatch => {
 };
 
 export default connect(
-	null,
+	mapStateToProps,
 	mapDispatchToProps
 )(Signup);

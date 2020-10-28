@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import * as actions from '../store/actions/chat'
 import ChatItem from './ChatItem';
 import { CircularProgress } from '@material-ui/core';
+import { timeDiff } from '../utils';
 
 class Discussions extends Component {
 
@@ -60,9 +61,7 @@ class Discussions extends Component {
 											key={chat.id}
 											active={this.props.current_chat && this.props.current_chat.id === chat.id}
 											name={chat.is_group ? chat.name : this.getPCName(chat)}
-											time={
-												new Date(chat.last_active.split("T").join(" ")).toLocaleTimeString()
-											}
+											time={timeDiff(chat.last_active)}
 											dp_url={
 												chat.is_group ?
 												"group-no-profile.jpg" :

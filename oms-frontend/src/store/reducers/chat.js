@@ -38,7 +38,14 @@ const chatMessageRecieve = (state, action) => {
     let updated_chats = [...state.chats];
     let updated_current_chat = state.current_chat ? { ...state.current_chat } : null;
     let chat_index = updated_chats.findIndex(chat => chat.id == action.message.chat);
-    updated_chats[chat_index].messages.push(action.message);
+    let active_chat = updated_chats.splice(chat_index, 1);
+    if (action.message.sender.profile_photo) {
+        action.message.sender.profile_photo = HOST_URL + action.message.sender.profile_photo;
+        console.log(action.message.profile_photo);
+    }
+    active_chat[0].messages.push(action.message);
+    active_chat[0].last_active = action.message.timestamp;
+    updated_chats.unshift(active_chat[0]);
     // if (updated_current_chat && updated_current_chat.id == action.message.chat) {
     //     updated_current_chat.messages.push(action.message);
     // }

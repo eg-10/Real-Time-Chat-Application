@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from "react-redux";
 import * as actions from "../store/actions/auth";
 import { Link, BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
+import { CircularProgress } from '@material-ui/core';
 
 export class Signin extends Component {
 
@@ -35,7 +36,7 @@ export class Signin extends Component {
 													<input name="password" type="password" id="inputPassword" className="form-control" placeholder="Password" required></input>
 													<button className="btn icon"><i className="material-icons">lock_outline</i></button>
 												</div>
-												<button type="submit" className="btn button" >Login</button>
+												<button type="submit" className="btn button" >{this.props.loading ? <CircularProgress /> : "Login"}</button>
 												<div className="callout">
 													<span>Don't have account? <a href="sign-up.html">Create Account</a></span>
 												</div>

@@ -4,6 +4,7 @@ import '../css/swipe.min.css';
 
 import * as actions from '../store/actions/chat'
 import Message from './Message';
+import { timeDiff } from '../utils';
 
 class ChatWindow extends Component {
 
@@ -119,7 +120,7 @@ class ChatWindow extends Component {
 																	sender={message.sender.user.username}
 																	me={message.sender.user.username === this.props.user}
 																	message={message.text_content}
-																	time={new Date(message.timestamp.split("T").join(" ")).toLocaleTimeString()}
+																	time={timeDiff(message.timestamp)}
 																	dp_url={
 																		message.sender.profile_photo && message.sender.profile_photo.length ?
 																		message.sender.profile_photo :

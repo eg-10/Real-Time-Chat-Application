@@ -1,5 +1,7 @@
-from django.db import models
 from django.contrib.auth.models import User
+from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 
 class Message(models.Model):
@@ -10,7 +12,7 @@ class Message(models.Model):
     sender = models.ForeignKey('Customer', null=True, on_delete=models.SET_NULL)
 
     class Meta:
-        ordering = ['-timestamp', '-pk']
+        ordering = ['timestamp', 'pk']
 
     def __str__(self):
         return str(self.sender) + ':' + str(self.text_content)
@@ -53,3 +55,8 @@ class AdminUser(models.Model):
 
     def __str__(self):
         return self.user.username
+
+
+@receiver(post_save, sender=Message)
+def update_chat_last_active(sender, instance, **kwargs):
+    instance.chat.save()
