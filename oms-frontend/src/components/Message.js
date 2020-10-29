@@ -13,7 +13,7 @@ export default class Message extends Component {
                             src={this.props.dp_url}
                             alt="avatar" />
                 }
-                <div className="text-main">
+                <div className={this.props.me ? "text-main text-right" : "text-main"}>
                     <div className="text-group">
                         <div className={this.props.me ? "text me" : "text"}>
                             {!(this.props.me) ?

@@ -23,9 +23,12 @@ class ChatItem extends Component {
                     src={this.props.dp_url}
                     alt="avatar" />
                 {/* <img className="avatar-md" src={require("../img/avatars/idaho.jpg")} data-toggle="tooltip" data-placement="top" title="Janette" alt="avatar" /> */}
-                {/* <div className="status">
-                    <i className="material-icons online">fiber_manual_record</i>
-                </div> */}
+                {
+                    this.props.chat.updated ?
+                    <div className="status">
+                        <i className="material-icons online">fiber_manual_record</i>
+                    </div> : null
+                }
                 {/* <div className="new bg-yellow">
                     <span>+7</span>
                 </div> */}

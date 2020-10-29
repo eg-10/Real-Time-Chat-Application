@@ -28,8 +28,14 @@ const chatInit = (state, action) => {
 };
 
 const chatSelected = (state, action) => {
+    let current_chat = {...action.chat};
+    current_chat.updated = false;
+    let updated_chats = [...state.chats];
+    let curr_index = updated_chats.findIndex(c => c.id === current_chat.id);
+    updated_chats[curr_index] = current_chat;
     return updateObject(state, {
-        current_chat: action.chat,
+        current_chat: current_chat,
+        chats: updated_chats,
     });
 };
 
@@ -45,6 +51,9 @@ const chatMessageRecieve = (state, action) => {
     }
     active_chat[0].messages.push(action.message);
     active_chat[0].last_active = action.message.timestamp;
+    if (!(state.current_chat) || state.current_chat.id !== active_chat[0].id) {
+        active_chat[0].updated = true;
+    }
     updated_chats.unshift(active_chat[0]);
     // if (updated_current_chat && updated_current_chat.id == action.message.chat) {
     //     updated_current_chat.messages.push(action.message);
