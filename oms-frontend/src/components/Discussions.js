@@ -77,7 +77,7 @@ class Discussions extends Component {
 										/>
 									);
 								})
-								: <p className="text-center">You haven't started chattting yet!</p>
+								: <p className="text-center">You haven't started any chats yet!</p>
 						}
 						<a className="filterDiscussions all unread single active">
 						</a>

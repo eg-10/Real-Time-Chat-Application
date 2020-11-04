@@ -47,7 +47,7 @@ class Customer(models.Model):
         return self.user.username
 
 
-class AdminUser(models.Model):
+class Administrator(models.Model):
     user = models.OneToOneField(
         User, 
         on_delete=models.CASCADE, 
